@@ -97,7 +97,7 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                         ? rawRentalPeriodList
                         : Collections.emptyList())
                         .stream()
-                        .sorted(Comparator.comparingInt(DiscountOnRentalPeriodRecord::getRentalPeriod)
+                        .sorted((a, b) -> b.getRentalPeriod() - a.getRentalPeriod())
                                 .reversed())
                         .collect(Collectors.toList());
 
@@ -107,7 +107,7 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                         ? rawFullPaymentList
                         : Collections.emptyList())
                         .stream()
-                        .sorted(Comparator.comparingInt(DiscountOnFullPaymentRecord::getRentalPeriod)
+                        Comparator.<DiscountOnRentalPeriodRecord>comparingInt(DiscountOnRentalPeriodRecord::getRentalPeriod)
                                 .reversed())
                         .collect(Collectors.toList());
 
