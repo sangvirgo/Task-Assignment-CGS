@@ -81,13 +81,15 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                 List<ItemInfoRes> customizeItemList = new ArrayList<>();
 
                 List<DiscountOnRentalPeriodRecord> rawRentalPeriodList = rackRevenueConfigRepo
-                        .getListDiscountOnRentalPeriodByConfigurationId(packageRecord.getItemRevenueConfigId());
-                List<DiscountOnRentalPeriodRecord> discountOnRentalPeriodList = (rawRentalPeriodList != null
-                        ? rawRentalPeriodList
-                        : Collections.emptyList())
-                        .stream()
-                        .sorted((a, b) -> b.getRentalPeriod() - a.getRentalPeriod())
-                        .collect(Collectors.toList());
+                .getListDiscountOnRentalPeriodByConfigurationId(packageRecord.getItemRevenueConfigId());
+
+                List<DiscountOnRentalPeriodRecord> base = rawRentalPeriodList != null 
+                ? rawRentalPeriodList 
+                : Collections.<DiscountOnRentalPeriodRecord>emptyList();  
+
+                List<DiscountOnRentalPeriodRecord> discountOnRentalPeriodList = base.stream()
+                .sorted((a, b) -> b.getRentalPeriod() - a.getRentalPeriod())
+                .collect(Collectors.toList());
 
                 List<DiscountOnFullPaymentRecord> rawFullPaymentList = rackRevenueConfigRepo
                         .getListDiscountOnFullPaymentByConfigurationId(packageRecord.getItemRevenueConfigId());
