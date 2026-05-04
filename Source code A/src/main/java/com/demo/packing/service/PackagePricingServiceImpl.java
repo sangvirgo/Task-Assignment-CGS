@@ -29,10 +29,6 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
 
         @Override
         public PackageRecord getPackageById(String packageId) {
-                // This is a placeholder to simulate fetching a package record from the
-                // database.
-                // In a real implementation, this would query the database for the package
-                // details based on the provided packageId.
                 return new PackageRecord(
                                 packageId,
                                 "config123",
@@ -62,18 +58,11 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
         @Override
         public boolean checkAvailablePackage(LocalDateTime fromDate, LocalDateTime toDate,
                         PackageRecord packageRecord) {
-                // This is a placeholder to simulate checking package availability.
-                // In a real implementation, this would check the database for existing bookings
-                // that overlap with the requested period and compare it against the package's
-                // available quantity.
                 return true;
         }
 
         @Override
         public ItemDetailsRes getItemDetailsById(String itemId, String companyId) {
-                // This is a placeholder to simulate fetching a specific item (identified by ID
-                // and companyId) from the database.
-
                 return new ItemDetailsRes()
                         .setId(itemId)
                         .setStatus(1)
@@ -98,7 +87,6 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                         : Collections.emptyList())
                         .stream()
                         .sorted((a, b) -> b.getRentalPeriod() - a.getRentalPeriod())
-                                .reversed())
                         .collect(Collectors.toList());
 
                 List<DiscountOnFullPaymentRecord> rawFullPaymentList = rackRevenueConfigRepo
@@ -107,8 +95,7 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                         ? rawFullPaymentList
                         : Collections.emptyList())
                         .stream()
-                        Comparator.<DiscountOnRentalPeriodRecord>comparingInt(DiscountOnRentalPeriodRecord::getRentalPeriod)
-                                .reversed())
+                        .sorted((a, b) -> b.getRentalPeriod() - a.getRentalPeriod())
                         .collect(Collectors.toList());
 
                 BigDecimal packagePrice = packageRecord.getOfficialPrice();
@@ -129,7 +116,7 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
                 BigDecimal packageFullPaymentPrice = packageTotalPrice.subtract(fullPaymentOptionDiscount)
-                                .setScale(2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+                                .setScale(2, RoundingMode.HALF_UP);
                 BigDecimal packagePayMonthlyPrice = packageTotalPrice.subtract(payMonthlyOptionDiscount).setScale(2,
                                 RoundingMode.HALF_UP);
                 BigDecimal payMonthlyPrice = packagePayMonthlyPrice
@@ -174,13 +161,10 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                         }
 
                         packageFullPaymentPrice = packageFullPaymentPrice.add(totalCustomItemPrice);
-
                         packagePayMonthlyPrice = packagePayMonthlyPrice.add(totalCustomItemPrice);
-
                         payMonthlyPrice = payMonthlyPrice.add(
                                         totalCustomItemPrice.divide(BigDecimal.valueOf(data.getPeriodValue()),
                                                         RoundingMode.HALF_UP));
-
                         subTotal = subTotal.add(totalCustomItemPrice);
 
                         priceSummaryRes
@@ -203,7 +187,6 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                                                 .setTaxPercent(0.0)
                                                 .setSubTotal(tax.add(packageFullPaymentPrice))
                                                 .setContractTotalPrice(tax.add(packageFullPaymentPrice));
-
                         } else if (paymentOption.equals(PaymentOption.PAYMONTHLY.getCode())) {
                                 priceSummaryRes
                                                 .setPackagePrice(packagePrice)
@@ -214,7 +197,6 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                                                 .setTaxPercent(0.0)
                                                 .setSubTotal(tax.add(packagePayMonthlyPrice))
                                                 .setContractTotalPrice(tax.add(packagePayMonthlyPrice));
-
                         }
                 } else {
                         priceSummaryRes.setPackagePrice(packagePrice)
