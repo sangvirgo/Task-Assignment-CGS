@@ -92,13 +92,16 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                 .collect(Collectors.toList());
 
                 List<DiscountOnFullPaymentRecord> rawFullPaymentList = rackRevenueConfigRepo
-                        .getListDiscountOnFullPaymentByConfigurationId(packageRecord.getItemRevenueConfigId());
-                List<DiscountOnFullPaymentRecord> discountOnFullPaymentList = (rawFullPaymentList != null
-                        ? rawFullPaymentList
-                        : Collections.emptyList())
-                        .stream()
-                        .sorted((a, b) -> b.getRentalPeriod() - a.getRentalPeriod())
-                        .collect(Collectors.toList());
+                .getListDiscountOnFullPaymentByConfigurationId(packageRecord.getItemRevenueConfigId());
+
+                List<DiscountOnFullPaymentRecord> baseFullPayment = rawFullPaymentList != null
+                ? rawFullPaymentList
+                : Collections.<DiscountOnFullPaymentRecord>emptyList();  // thêm explicit type ở đây
+
+                List<DiscountOnFullPaymentRecord> discountOnFullPaymentList = baseFullPayment.stream()
+                .sorted((a, b) -> b.getRentalPeriod() - a.getRentalPeriod())
+                .collect(Collectors.toList());
+
 
                 BigDecimal packagePrice = packageRecord.getOfficialPrice();
                 BigDecimal packageTotalPrice = packageRecord.getOfficialPrice()
