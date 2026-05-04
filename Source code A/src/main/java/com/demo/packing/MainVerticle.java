@@ -24,7 +24,8 @@ public class MainVerticle extends VerticleBase {
 
     router.route().handler(BodyHandler.create());
     router.route().handler(
-      CorsHandler.create(".*")
+      CorsHandler.create()
+        .addOrigin("*")
         .allowedMethods(Set.of(
           io.vertx.core.http.HttpMethod.GET,
           io.vertx.core.http.HttpMethod.POST,

@@ -20,7 +20,7 @@ public class PaymentServiceImpl implements IPaymentService {
             "SAVE10", BigDecimal.TEN,
             "SAVE5", BigDecimal.valueOf(5)
     );
-    private static final Map<String, PaymentPendingRes> PENDING_TRANSACTION_STORE = new HashMap<>();
+    private static final Map<String, PaymentPendingRes> PENDING_TRANSACTION_STORE = new ConcurrentHashMap<>();
 
     @Override
     public PaymentPreviewRes preview(PaymentPreviewReq request) {
