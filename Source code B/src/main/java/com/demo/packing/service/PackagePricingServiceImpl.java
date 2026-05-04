@@ -108,7 +108,7 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                         ? rawFullPaymentList
                         : Collections.emptyList())
                         .stream()
-                        .sorted(Comparator.comparingDouble(DiscountOnFullPaymentRecord::getRentalPeriod)
+                        .sorted(Comparator.comparingInt(DiscountOnFullPaymentRecord::getRentalPeriod)
                                 .reversed())
                         .collect(Collectors.toList());
 
@@ -166,7 +166,7 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                                                                 .multiply(BigDecimal.valueOf(mapNumberSubItemOfItem
                                                                                 .get(item.getId()))));
 
-                                if (Objects.equals(itemInfoRes.getPrice(), BigDecimal.ZERO)) {
+                                if (itemInfoRes.getPrice().compareTo(BigDecimal.ZERO) == 0) {
                                         defaultItemList.add(itemInfoRes);
                                 } else {
                                         totalCustomItemPrice = totalCustomItemPrice
