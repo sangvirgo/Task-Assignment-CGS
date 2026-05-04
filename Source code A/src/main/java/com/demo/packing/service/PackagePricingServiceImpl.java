@@ -65,6 +65,7 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
         public ItemDetailsRes getItemDetailsById(String itemId, String companyId) {
                 return new ItemDetailsRes()
                         .setId(itemId)
+                        .setItemName("Sample Item")  // ✅
                         .setStatus(1)
                         .setPrice(BigDecimal.valueOf(25.00));
         }
@@ -134,12 +135,13 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                 BigDecimal tax = BigDecimal.ZERO;
 
                 PriceSummaryRes priceSummaryRes = new PriceSummaryRes()
-                                .setPackageId(packageRecord.getPackageId())
-                                .setPackageName(packageRecord.getPackageName())
-                                .setFromDate(data.getFromDate())
-                                .setToDate(DateTimeUtil.getLocalDateTime(toDate))
-                                .setRentalPeriodValue(data.getPeriodValue())
-                                .setTaxPercent(0.0);
+                        .setPackageId(packageRecord.getPackageId())
+                        .setPackageName(packageRecord.getPackageName())
+                        .setFromDate(data.getFromDate())
+                        .setToDate(DateTimeUtil.getLocalDateTime(toDate))
+                        .setRentalPeriodValue(data.getPeriodValue())
+                        .setTaxPercent(0.0)
+                        .setTax(BigDecimal.ZERO);
 
                 if (data.getList() != null && !data.getList().isEmpty()) {
                         BigDecimal totalCustomItemPrice = BigDecimal.ZERO;
