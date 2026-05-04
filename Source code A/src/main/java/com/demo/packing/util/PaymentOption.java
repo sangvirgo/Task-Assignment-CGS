@@ -21,6 +21,5 @@ public enum PaymentOption {
             }
             throw new IllegalArgumentException("Unexpected code value: " + code);
         }
-    } {
-    
+     
 }

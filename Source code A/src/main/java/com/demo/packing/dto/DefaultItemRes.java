@@ -24,4 +24,21 @@ public class DefaultItemRes {
         this.ItemInfoList = rackInfoList;
         return this;
     }
+
+    public JsonObject toJson() {
+        JsonArray itemInfoJsonArray = new JsonArray();
+        if (ItemInfoList != null) {
+            for (ItemInfoRes item : ItemInfoList) {
+                itemInfoJsonArray.add(new JsonObject()
+                        .put("itemId", item.getItemId())
+                        .put("itemName", item.getItemName())
+                        .put("numberOfItems", item.getNumberOfItems())
+                        .put("price", item.getPrice()));
+            }
+        }
+
+        return new JsonObject()
+                .put("totalPrice", totalPrice)
+                .put("itemInfoList", itemInfoJsonArray);
+    }
 }

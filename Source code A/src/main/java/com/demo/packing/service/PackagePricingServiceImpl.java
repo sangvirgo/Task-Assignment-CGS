@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 public class PackagePricingServiceImpl implements IPackagePricingService {
         private final IItemRevenueConfigRepo rackRevenueConfigRepo = new ItemRevenueConfigRepoImpl();
@@ -73,7 +74,10 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                 // This is a placeholder to simulate fetching a specific item (identified by ID
                 // and companyId) from the database.
 
-                return new ItemDetailsRes(itemId, "APPROVED", BigDecimal.valueOf(25.00));
+                return new ItemDetailsRes()
+                        .setId(itemId)
+                        .setStatus(1)
+                        .setPrice(BigDecimal.valueOf(25.00));
         }
 
         @Override
@@ -87,18 +91,25 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                 List<ItemInfoRes> defaultItemList = new ArrayList<>();
                 List<ItemInfoRes> customizeItemList = new ArrayList<>();
 
-                List<DiscountOnRentalPeriodRecord> discountOnRentalPeriodList = rackRevenueConfigRepo
-                                .getListDiscountOnRentalPeriodByConfigurationId(packageRecord.getItemRevenueConfigId())
-                                .stream()
-                                .sorted(Comparator.comparingInt(DiscountOnRentalPeriodRecord::getRentalPeriod)
-                                                .reversed())
-                                .collect(Collectors.toList());
-                List<DiscountOnFullPaymentRecord> discountOnFullPaymentList = rackRevenueConfigRepo
-                                .getListDiscountOnFullPaymentByConfigurationId(packageRecord.getItemRevenueConfigId())
-                                .stream()
-                                .sorted(Comparator.comparingDouble(DiscountOnFullPaymentRecord::getRentalPeriod)
-                                                .reversed())
-                                .collect(Collectors.toList());
+                List<DiscountOnRentalPeriodRecord> rawRentalPeriodList = rackRevenueConfigRepo
+                        .getListDiscountOnRentalPeriodByConfigurationId(packageRecord.getItemRevenueConfigId());
+                List<DiscountOnRentalPeriodRecord> discountOnRentalPeriodList = (rawRentalPeriodList != null
+                        ? rawRentalPeriodList
+                        : Collections.emptyList())
+                        .stream()
+                        .sorted(Comparator.comparingInt(DiscountOnRentalPeriodRecord::getRentalPeriod)
+                                .reversed())
+                        .collect(Collectors.toList());
+
+                List<DiscountOnFullPaymentRecord> rawFullPaymentList = rackRevenueConfigRepo
+                        .getListDiscountOnFullPaymentByConfigurationId(packageRecord.getItemRevenueConfigId());
+                List<DiscountOnFullPaymentRecord> discountOnFullPaymentList = (rawFullPaymentList != null
+                        ? rawFullPaymentList
+                        : Collections.emptyList())
+                        .stream()
+                        .sorted(Comparator.comparingDouble(DiscountOnFullPaymentRecord::getRentalPeriod)
+                                .reversed())
+                        .collect(Collectors.toList());
 
                 BigDecimal packagePrice = packageRecord.getOfficialPrice();
                 BigDecimal packageTotalPrice = packageRecord.getOfficialPrice()

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class PackageHandler {
 
-    private static final String APPROVED_STATUS = "APPROVED";
+    private static final int APPROVED_STATUS = 1;
     private static final IPackagePricingService packagePricingService = new PackagePricingServiceImpl();
 
     private PackageHandler() {
@@ -26,7 +26,7 @@ public class PackageHandler {
 
     public static void calculatePackagePriceHandler(RoutingContext context) {
         try {
-            JsonObject requestBody = context.getBodyAsJson();
+            JsonObject requestBody = context.body().asJsonObject();
             if (requestBody == null) {
                 throw new IllegalArgumentException("Request body is required");
             }
@@ -54,7 +54,7 @@ public class PackageHandler {
                 String companyId = getCompanyIdFromClaims(context);
                 for (PreBookingItemReq preBookingItemReq : data.getList()) {
                     ItemDetailsRes itemDetails = packagePricingService.getItemDetailsById(preBookingItemReq.getItemId(), companyId);
-                    if (!APPROVED_STATUS.equals(itemDetails.getStatus())) {
+                    if (itemDetails.getStatus() == null || itemDetails.getStatus() != APPROVED_STATUS) {
                         throw new IllegalArgumentException("Item is not approved");
                     }
                     itemDetailsList.add(itemDetails);
