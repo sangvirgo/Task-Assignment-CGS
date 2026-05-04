@@ -93,24 +93,26 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                 List<ItemInfoRes> customizeItemList = new ArrayList<>();
 
                 List<DiscountOnRentalPeriodRecord> rawRentalPeriodList = rackRevenueConfigRepo
-                        .getListDiscountOnRentalPeriodByConfigurationId(packageRecord.getItemRevenueConfigId());
-                List<DiscountOnRentalPeriodRecord> discountOnRentalPeriodList = (rawRentalPeriodList != null
-                        ? rawRentalPeriodList
-                        : Collections.emptyList())
-                        .stream()
-                        .sorted(Comparator.comparingInt(DiscountOnRentalPeriodRecord::getRentalPeriod)
-                                .reversed())
-                        .collect(Collectors.toList());
+                .getListDiscountOnRentalPeriodByConfigurationId(packageRecord.getItemRevenueConfigId());
+
+                List<DiscountOnRentalPeriodRecord> baseRental = rawRentalPeriodList != null
+                ? rawRentalPeriodList
+                : Collections.<DiscountOnRentalPeriodRecord>emptyList();
+
+                List<DiscountOnRentalPeriodRecord> discountOnRentalPeriodList = baseRental.stream()
+                .sorted(Comparator.comparingInt(DiscountOnRentalPeriodRecord::getRentalPeriod).reversed())
+                .collect(Collectors.toList());
 
                 List<DiscountOnFullPaymentRecord> rawFullPaymentList = rackRevenueConfigRepo
-                        .getListDiscountOnFullPaymentByConfigurationId(packageRecord.getItemRevenueConfigId());
-                List<DiscountOnFullPaymentRecord> discountOnFullPaymentList = (rawFullPaymentList != null
-                        ? rawFullPaymentList
-                        : Collections.emptyList())
-                        .stream()
-                        .sorted(Comparator.comparingInt(DiscountOnFullPaymentRecord::getRentalPeriod)
-                                .reversed())
-                        .collect(Collectors.toList());
+                .getListDiscountOnFullPaymentByConfigurationId(packageRecord.getItemRevenueConfigId());
+
+                List<DiscountOnFullPaymentRecord> baseFullPayment = rawFullPaymentList != null
+                ? rawFullPaymentList
+                : Collections.<DiscountOnFullPaymentRecord>emptyList();
+
+                List<DiscountOnFullPaymentRecord> discountOnFullPaymentList = baseFullPayment.stream()
+                .sorted(Comparator.comparingInt(DiscountOnFullPaymentRecord::getRentalPeriod).reversed())
+                .collect(Collectors.toList());
 
                 BigDecimal packagePrice = packageRecord.getOfficialPrice();
                 BigDecimal packageTotalPrice = packageRecord.getOfficialPrice()
