@@ -2,6 +2,8 @@ package com.demo.packing.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 public class DefaultItemRes {
     private BigDecimal totalPrice;
