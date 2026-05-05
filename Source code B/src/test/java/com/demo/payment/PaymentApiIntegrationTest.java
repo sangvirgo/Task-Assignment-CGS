@@ -66,7 +66,7 @@ class PaymentApiIntegrationTest {
 
         assertEquals(200, response.statusCode());
         assertEquals("Payment preview calculated", json.getString("message"));
-        assertEquals(new BigDecimal("20.55"), data.getValue("payAmount"));
+        assertEquals(0, new BigDecimal("20.55").compareTo(new BigDecimal(data.getValue("payAmount").toString())));
     }
 
     @Test
