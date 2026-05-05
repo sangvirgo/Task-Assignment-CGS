@@ -19,6 +19,15 @@ class PaymentServiceImplTest {
 
     private PaymentServiceImpl paymentService;
 
+    // Helper: lấy BigDecimal từ JsonObject của Vert.x (không có getJsonNumber)
+    private static BigDecimal getBigDecimal(JsonObject json, String key) {
+        Object val = json.getValue(key);
+        if (val == null) return null;
+        if (val instanceof BigDecimal) return (BigDecimal) val;
+        if (val instanceof Number) return BigDecimal.valueOf(((Number) val).doubleValue());
+        return new BigDecimal(val.toString());
+    }
+
     @BeforeEach
     void setUp() {
         paymentService = new PaymentServiceImpl();
@@ -38,7 +47,7 @@ class PaymentServiceImplTest {
 
         PaymentPreviewRes res = paymentService.preview(req);
 
-        assertEquals(0, BigDecimal.valueOf(55.00).compareTo(res.toJson().getJsonNumber("payAmount").bigDecimalValue()));
+        assertEquals(0, BigDecimal.valueOf(55.00).compareTo(getBigDecimal(res.toJson(), "payAmount")));
     }
 
     @Test
@@ -52,8 +61,8 @@ class PaymentServiceImplTest {
 
         JsonObject res = paymentService.preview(req).toJson();
 
-        assertEquals(0, BigDecimal.valueOf(10.00).compareTo(res.getJsonNumber("voucherDiscount").bigDecimalValue()));
-        assertEquals(0, BigDecimal.valueOf(90.00).compareTo(res.getJsonNumber("payAmount").bigDecimalValue()));
+        assertEquals(0, BigDecimal.valueOf(10.00).compareTo(getBigDecimal(res, "voucherDiscount")));
+        assertEquals(0, BigDecimal.valueOf(90.00).compareTo(getBigDecimal(res, "payAmount")));
     }
 
     @Test
@@ -67,8 +76,8 @@ class PaymentServiceImplTest {
 
         JsonObject res = paymentService.preview(req).toJson();
 
-        assertEquals(0, BigDecimal.valueOf(10.00).compareTo(res.getJsonNumber("voucherDiscount").bigDecimalValue()));
-        assertEquals(0, BigDecimal.valueOf(190.00).compareTo(res.getJsonNumber("payAmount").bigDecimalValue()));
+        assertEquals(0, BigDecimal.valueOf(10.00).compareTo(getBigDecimal(res, "voucherDiscount")));
+        assertEquals(0, BigDecimal.valueOf(190.00).compareTo(getBigDecimal(res, "payAmount")));
     }
 
     @Test
@@ -82,8 +91,8 @@ class PaymentServiceImplTest {
 
         JsonObject res = paymentService.preview(req).toJson();
 
-        assertEquals(0, BigDecimal.valueOf(10.00).compareTo(res.getJsonNumber("walletUsed").bigDecimalValue()));
-        assertEquals(0, BigDecimal.ZERO.compareTo(res.getJsonNumber("payAmount").bigDecimalValue()));
+        assertEquals(0, BigDecimal.valueOf(10.00).compareTo(getBigDecimal(res, "walletUsed")));
+        assertEquals(0, BigDecimal.ZERO.compareTo(getBigDecimal(res, "payAmount")));
     }
 
     @Test
@@ -98,7 +107,7 @@ class PaymentServiceImplTest {
 
         JsonObject res = paymentService.preview(req).toJson();
 
-        assertEquals(0, BigDecimal.valueOf(20.55).compareTo(res.getJsonNumber("payAmount").bigDecimalValue()));
+        assertEquals(0, BigDecimal.valueOf(20.55).compareTo(getBigDecimal(res, "payAmount")));
     }
 
     @Test
@@ -122,7 +131,7 @@ class PaymentServiceImplTest {
                 .put("paymentMethod", 0));
 
         JsonObject res = paymentService.preview(req).toJson();
-        assertEquals(0, BigDecimal.valueOf(10.00).compareTo(res.getJsonNumber("voucherDiscount").bigDecimalValue()));
+        assertEquals(0, BigDecimal.valueOf(10.00).compareTo(getBigDecimal(res, "voucherDiscount")));
     }
 
     // ──────────────────────────────────────────────
