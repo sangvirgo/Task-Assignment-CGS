@@ -129,8 +129,7 @@ public class PackagePricingServiceImpl implements IPackagePricingService {
                                 .setScale(2, RoundingMode.HALF_UP);
                 BigDecimal payMonthlyOptionDiscount = packageTotalPrice
                                 .multiply(BigDecimal.valueOf(discountOnRentalPeriod))
-                                .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
-                                .setScale(2, RoundingMode.HALF_UP);
+                                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
                 BigDecimal packageFullPaymentPrice = packageTotalPrice.subtract(fullPaymentOptionDiscount)
                                 .setScale(2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
